@@ -1,0 +1,17 @@
+<div class="card">
+  <div class="card-header">
+    {{pageTitle}}
+  </div>
+  <div class="card-body" *ngIf="books">
+    <div class="list-group">
+      <button type="button" class="list-group-item" *ngFor="let book of books"
+        [ngClass]="{'active': book?.id === selectedBookId}"
+        (click)="onSelected(book.id)">
+        {{ book.bookName }} ({{book.categoryId}})
+      </button>
+    </div>
+  </div>
+</div>
+<div class="alert alert-danger" *ngIf="errorMessage">
+  {{errorMessage}}
+</div>

@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'demo-rxjs-ng-reactive-dev';
+  pageTitle = 'VSR Book Management';
 }
