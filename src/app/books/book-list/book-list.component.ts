@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 
 import { Book } from '../book';
 import { BookService } from '../book.service';
@@ -10,26 +9,18 @@ import { BookService } from '../book.service';
   templateUrl: './book-list.component.html',
   styleUrls: ['./book-list.component.css']
 })
-export class BookListComponent implements OnInit, OnDestroy {
+export class BookListComponent implements OnInit {
 
   pageTitle = 'Book List';
   errorMessage = '';
   categories;
 
-  books: Book[] = [];
-  sub: Subscription;
+  books$: Observable<Book[]>;
 
   constructor(private bookService: BookService) { }
 
   ngOnInit(): void {
-    this.sub = this.bookService.getBooks().subscribe(
-      books => this.books = books,
-      error => this.errorMessage = error
-    );
-  }
-
-  ngOnDestroy(): void{
-    this.sub.unsubscribe();
+    this.books$ = this.bookService.getBooks();
   }
 
   onAdd(): void{

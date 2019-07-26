@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="table-responsive">
-      <table class="table mb-0" *ngIf="books">
+      <table class="table mb-0" *ngIf="books$ | async as books">
         <thead>
           <tr>
             <th>Book</th>
