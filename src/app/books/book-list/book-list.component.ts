@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, of, EMPTY } from 'rxjs';
 
 import { Book } from '../book';
@@ -8,7 +8,8 @@ import { catchError } from 'rxjs/operators';
 @Component({
   selector: 'app-book-list',
   templateUrl: './book-list.component.html',
-  styleUrls: ['./book-list.component.css']
+  styleUrls: ['./book-list.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookListComponent implements OnInit {
 
