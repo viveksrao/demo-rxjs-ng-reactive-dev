@@ -16,14 +16,12 @@ export class BookService {
   private booksUrl = 'api/books';
   private publishersUrl = this.publisherService.publishersUrl;
 
-  constructor(private http: HttpClient, private publisherService: PublisherService) { }
+  books$ = this.http.get<Book[]>(this.booksUrl).pipe(
+    tap(data => console.log('Books: ', JSON.stringify(data))),
+    catchError(this.handleError)
+  );
 
-  getBooks(): Observable<Book[]>{
-    return this.http.get<Book[]>(this.booksUrl).pipe(
-      tap(data => console.log('Books: ', JSON.stringify(data))),
-      catchError(this.handleError)
-    );
-  }
+  constructor(private http: HttpClient, private publisherService: PublisherService) { }
 
   private fakeBook(){
     return{

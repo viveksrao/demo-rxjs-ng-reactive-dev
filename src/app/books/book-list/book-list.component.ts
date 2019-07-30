@@ -1,7 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable, of, EMPTY } from 'rxjs';
-
-import { Book } from '../book';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { EMPTY } from 'rxjs';
 import { BookService } from '../book.service';
 import { catchError } from 'rxjs/operators';
 
@@ -11,25 +9,21 @@ import { catchError } from 'rxjs/operators';
   styleUrls: ['./book-list.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BookListComponent implements OnInit {
+export class BookListComponent {
 
   pageTitle = 'Book List';
   errorMessage = '';
   categories;
 
-  books$: Observable<Book[]>;
+  books$ = this.bookService.books$
+  .pipe(
+    catchError(err => {
+      this.errorMessage = err;
+      return EMPTY;
+    })
+  );
 
   constructor(private bookService: BookService) { }
-
-  ngOnInit(): void {
-    this.books$ = this.bookService.getBooks()
-    .pipe(
-      catchError(err => {
-        this.errorMessage = err;
-        return EMPTY;
-      })
-    )
-  }
 
   onAdd(): void{
     console.log('Not yet implemented');
