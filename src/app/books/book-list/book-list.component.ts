@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of, EMPTY } from 'rxjs';
 
 import { Book } from '../book';
 import { BookService } from '../book.service';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-book-list',
@@ -20,7 +21,13 @@ export class BookListComponent implements OnInit {
   constructor(private bookService: BookService) { }
 
   ngOnInit(): void {
-    this.books$ = this.bookService.getBooks();
+    this.books$ = this.bookService.getBooks()
+    .pipe(
+      catchError(err => {
+        this.errorMessage = err;
+        return EMPTY;
+      })
+    )
   }
 
   onAdd(): void{
