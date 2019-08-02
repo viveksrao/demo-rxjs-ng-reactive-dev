@@ -18,6 +18,7 @@ export class BookService {
 
   books$ = this.http.get<Book[]>(this.booksUrl).pipe(
     // map(item => item.price * 1.5),
+    map(books => books),
     tap(data => console.log('Books: ', JSON.stringify(data))),
     catchError(this.handleError)
   );
