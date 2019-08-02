@@ -17,7 +17,11 @@ export class BookService {
   private publishersUrl = this.publisherService.publishersUrl;
 
   books$ = this.http.get<Book[]>(this.booksUrl).pipe(
-    map(books => books.map(book => book.price * 1.5)),
+    map(books => books.map(book => ({
+      ...book,
+      price: book.price * 1.5,
+      searchKey: [book.searchKey]
+    }))),
     tap(data => console.log('Books: ', JSON.stringify(data))),
     catchError(this.handleError)
   );
