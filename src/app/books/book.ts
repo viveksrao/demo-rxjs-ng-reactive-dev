@@ -5,6 +5,7 @@ export interface Book {
   description?: string;
   price?: number;
   categoryId?: number;
+  category?: string;
   quantityInStock?: number;
   searchKey?: string[];
   publisherIds?:number[];

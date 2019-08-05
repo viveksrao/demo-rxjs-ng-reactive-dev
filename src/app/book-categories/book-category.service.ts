@@ -3,13 +3,20 @@ import { HttpClient } from '@angular/common/http';
 import { throwError } from 'rxjs';
 
 import { BookCategory } from "./book-category";
+import { tap, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BookCategoryService {
-  
-  private bookCategoriesUrl = 'api/bookCategories'
+
+  private bookCategoriesUrl = 'api/bookCategories';
+
+  bookCategories$ = this.http.get<BookCategory[]>(this.bookCategoriesUrl)
+  .pipe(
+    tap(data => console.log(`Categories`, JSON.stringify(data))),
+    catchError(this.handleError)
+  );
 
   constructor(private http: HttpClient) { }
 

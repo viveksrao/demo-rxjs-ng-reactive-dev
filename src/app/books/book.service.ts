@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { throwError, Observable } from 'rxjs';
+import { throwError, Observable, combineLatest } from 'rxjs';
 import { catchError, tap, map } from "rxjs/operators";
 
 import { Book } from './book';
 import { Publisher } from "../publishers/publisher";
 import { PublisherService } from '../publishers/publisher.service';
+import { BookCategoryService } from '../book-categories/book-category.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,16 +18,27 @@ export class BookService {
   private publishersUrl = this.publisherService.publishersUrl;
 
   books$ = this.http.get<Book[]>(this.booksUrl).pipe(
-    map(books => books.map(book => ({
-      ...book,
-      price: book.price * 1.5,
-      searchKey: [book.searchKey]
-    }))),
     tap(data => console.log('Books: ', JSON.stringify(data))),
     catchError(this.handleError)
   );
 
-  constructor(private http: HttpClient, private publisherService: PublisherService) { }
+  booksWithCategory$ = combineLatest([
+    this.books$,
+    this.bookCategoryService.bookCategories$
+  ])
+  .pipe(
+    map(([books, categories]) =>
+      books.map(book => ({
+        ...book,
+        price: book.price * 1.5,
+        category: categories.find(
+          c => book.categoryId === c.id
+        ).name
+      }) as Book)
+    )
+  );
+
+  constructor(private http: HttpClient, private bookCategoryService: BookCategoryService, private publisherService: PublisherService) { }
 
   private fakeBook(){
     return{

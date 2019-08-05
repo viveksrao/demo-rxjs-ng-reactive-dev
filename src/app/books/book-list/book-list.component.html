@@ -6,8 +6,7 @@
     <div class="container">
       <div class="row justify-content-between">
         <div class="col-3">
-          <select class="form-control"
-            (change)="onSelected($event.target.value)">
+          <select class="form-control" (change)="onSelected($event.target.value)">
             <option value="0">- Display All -</option>
             <option *ngFor="let category of categories" [value]="category.id">
               {{category.name}}
@@ -15,8 +14,7 @@
           </select>
         </div>
         <div class="col-2">
-          <button type="button" class="btn btn-outline-secondary"
-            (click)="onAdd()">Add Book</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="onAdd()">Add Book</button>
         </div>
       </div>
     </div>
@@ -35,7 +33,7 @@
           <tr>
             <td>{{ book.bookName }}</td>
             <td>{{ book.bookCode }}</td>
-            <td>{{ book.categoryId }}</td>
+            <td>{{ book.category }}</td>
             <td>{{ book.price | currency:"USD":"symbol":"1.2-2" }}</td>
             <td>{{ book.quantityInStock }}</td>
           </tr>
