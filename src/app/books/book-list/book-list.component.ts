@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { EMPTY } from 'rxjs';
 import { BookService } from '../book.service';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-book-list',
@@ -14,6 +14,7 @@ export class BookListComponent {
   pageTitle = 'Book List';
   errorMessage = '';
   categories;
+  selectedCategoryId = 1;
 
   books$ = this.bookService.booksWithCategory$
   .pipe(
@@ -22,6 +23,14 @@ export class BookListComponent {
       return EMPTY;
     })
   );
+
+  booksSimpleFilter$ = this.bookService.booksWithCategory$
+    .pipe(
+      map(books => 
+        books.filter(book => 
+          this.selectedCategoryId ? book.categoryId === this.selectedCategoryId : true
+        ))
+    );
 
   constructor(private bookService: BookService) { }
 
