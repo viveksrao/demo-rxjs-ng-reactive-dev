@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { EMPTY } from 'rxjs';
+import { EMPTY, Subject, combineLatest } from 'rxjs';
 import { BookService } from '../book.service';
 import { catchError, map } from 'rxjs/operators';
 import { BookCategoryService } from 'src/app/book-categories/book-category.service';
@@ -14,10 +14,19 @@ export class BookListComponent {
 
   pageTitle = 'Book List';
   errorMessage = '';
-  selectedCategoryId = 1;
 
-  books$ = this.bookService.booksWithCategory$
+  private categorySelectedSubject = new Subject<number>();
+  categorySelectedAction$ = this.categorySelectedSubject.asObservable();
+
+  books$ = combineLatest([
+    this.bookService.booksWithCategory$,
+    this.categorySelectedAction$
+  ]) 
   .pipe(
+    map(([books, selectedCategoryId]) =>
+      books.filter(book => 
+        selectedCategoryId ? book.categoryId === selectedCategoryId : true
+    )),
     catchError(err => {
       this.errorMessage = err;
       return EMPTY;
@@ -32,14 +41,6 @@ export class BookListComponent {
     })
   );
 
-  booksSimpleFilter$ = this.bookService.booksWithCategory$
-    .pipe(
-      map(books => 
-        books.filter(book => 
-          this.selectedCategoryId ? book.categoryId === this.selectedCategoryId : true
-        ))
-    );
-
   constructor(private bookService: BookService, private bookCategoryService: BookCategoryService) { }
 
   onAdd(): void{
@@ -47,7 +48,7 @@ export class BookListComponent {
   }
 
   onSelected(categoryId: string): void{
-    this.selectedCategoryId = +categoryId;
+    this.categorySelectedSubject.next(+categoryId);
   }
 
 }
