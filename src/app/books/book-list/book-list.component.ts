@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { EMPTY } from 'rxjs';
 import { BookService } from '../book.service';
 import { catchError, map } from 'rxjs/operators';
+import { BookCategoryService } from 'src/app/book-categories/book-category.service';
 
 @Component({
   selector: 'app-book-list',
@@ -13,10 +14,17 @@ export class BookListComponent {
 
   pageTitle = 'Book List';
   errorMessage = '';
-  categories;
   selectedCategoryId = 1;
 
   books$ = this.bookService.booksWithCategory$
+  .pipe(
+    catchError(err => {
+      this.errorMessage = err;
+      return EMPTY;
+    })
+  );
+
+  categories$ = this.bookCategoryService.bookCategories$
   .pipe(
     catchError(err => {
       this.errorMessage = err;
@@ -32,14 +40,14 @@ export class BookListComponent {
         ))
     );
 
-  constructor(private bookService: BookService) { }
+  constructor(private bookService: BookService, private bookCategoryService: BookCategoryService) { }
 
   onAdd(): void{
     console.log('Not yet implemented');
   }
 
   onSelected(categoryId: string): void{
-    console.log('Not yet implemented');
+    this.selectedCategoryId = +categoryId;
   }
 
 }
