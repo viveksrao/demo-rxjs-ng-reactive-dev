@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { EMPTY, Subject, combineLatest } from 'rxjs';
+import { EMPTY, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { BookService } from '../book.service';
 import { catchError, map, startWith } from 'rxjs/operators';
 import { BookCategoryService } from 'src/app/book-categories/book-category.service';
@@ -15,15 +15,12 @@ export class BookListComponent {
   pageTitle = 'Book List';
   errorMessage = '';
 
-  private categorySelectedSubject = new Subject<number>();
+  private categorySelectedSubject = new BehaviorSubject<number>(0);
   categorySelectedAction$ = this.categorySelectedSubject.asObservable();
 
   books$ = combineLatest([
     this.bookService.booksWithCategory$,
     this.categorySelectedAction$
-    .pipe(
-      startWith(0)
-    )
   ]) 
   .pipe(
     map(([books, selectedCategoryId]) =>
