@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { EMPTY, Subject, combineLatest } from 'rxjs';
 import { BookService } from '../book.service';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, startWith } from 'rxjs/operators';
 import { BookCategoryService } from 'src/app/book-categories/book-category.service';
 
 @Component({
@@ -21,6 +21,9 @@ export class BookListComponent {
   books$ = combineLatest([
     this.bookService.booksWithCategory$,
     this.categorySelectedAction$
+    .pipe(
+      startWith(0)
+    )
   ]) 
   .pipe(
     map(([books, selectedCategoryId]) =>
