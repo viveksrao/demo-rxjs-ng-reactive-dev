@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { EMPTY } from 'rxjs';
 import { BookService } from '../book.service';
 import { catchError } from 'rxjs/operators';
@@ -6,13 +6,13 @@ import { catchError } from 'rxjs/operators';
 @Component({
   selector: 'app-book-list-alt',
   templateUrl: './book-list-alt.component.html',
-  styleUrls: ['./book-list-alt.component.css']
+  styleUrls: ['./book-list-alt.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookListAltComponent {
 
   pageTitle = 'Books';
   errorMessage = '';
-  selectedBookId;
 
   books$ = this.bookService.booksWithCategory$
   .pipe(
@@ -22,10 +22,12 @@ export class BookListAltComponent {
     })
   );
 
+  selectedBook$ = this.bookService.selectedBook$;
+
   constructor(private bookService: BookService) { }
   
   onSelected(bookId: number): void{
-    console.log('Not yet implemented');
+    this.bookService.selectedBookChanged(bookId);
   }
 
 }

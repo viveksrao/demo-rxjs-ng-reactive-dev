@@ -5,7 +5,7 @@
   <div class="card-body" *ngIf="books$ | async as books">
     <div class="list-group">
       <button type="button" class="list-group-item" *ngFor="let book of books"
-        [ngClass]="{'active': book?.id === selectedBookId}"
+        [ngClass]="{'active': book?.id === (selectedBook$ | async)?.id}"
         (click)="onSelected(book.id)">
         {{ book.bookName }} ({{book.category}})
       </button>

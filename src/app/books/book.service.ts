@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { throwError, Observable, combineLatest } from 'rxjs';
+import { throwError, Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import { catchError, tap, map } from "rxjs/operators";
 
 import { Book } from './book';
@@ -38,15 +38,25 @@ export class BookService {
     )
   );
 
-  selectedBook$ = this.booksWithCategory$
+  private bookSelectedSubject = new BehaviorSubject<number>(0);
+  bookSelectedAction$ = this.bookSelectedSubject.asObservable();
+
+  selectedBook$ = combineLatest([
+    this.booksWithCategory$,
+    this.bookSelectedAction$
+  ])
     .pipe(
-      map(books => 
-        books.find(book => book.id === 5)
+      map(([books, selectedBookId]) => 
+        books.find(book => book.id === selectedBookId)
       ),
       tap(book => console.log('selectedBook', book))
     );
 
   constructor(private http: HttpClient, private bookCategoryService: BookCategoryService, private publisherService: PublisherService) { }
+
+  selectedBookChanged(selectedBookId: number): void{
+    this.bookSelectedSubject.next(selectedBookId);
+  }
 
   private fakeBook(){
     return{
