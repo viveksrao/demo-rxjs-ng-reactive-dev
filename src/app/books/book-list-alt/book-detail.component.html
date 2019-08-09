@@ -1,4 +1,4 @@
-<div class="card" *ngIf="book">
+<div class="card" *ngIf="book$ | async as book">
   <div class="card-header">
     {{pageTitle}}
   </div>

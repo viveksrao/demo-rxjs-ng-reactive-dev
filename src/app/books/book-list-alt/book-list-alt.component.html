@@ -7,7 +7,7 @@
       <button type="button" class="list-group-item" *ngFor="let book of books"
         [ngClass]="{'active': book?.id === selectedBookId}"
         (click)="onSelected(book.id)">
-        {{ book.bookName }} ({{book.categoryId}})
+        {{ book.bookName }} ({{book.category}})
       </button>
     </div>
   </div>

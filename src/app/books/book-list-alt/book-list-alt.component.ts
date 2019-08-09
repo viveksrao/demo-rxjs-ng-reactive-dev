@@ -14,7 +14,7 @@ export class BookListAltComponent {
   errorMessage = '';
   selectedBookId;
 
-  books$ = this.bookService.books$
+  books$ = this.bookService.booksWithCategory$
   .pipe(
     catchError(err => {
       this.errorMessage = err;

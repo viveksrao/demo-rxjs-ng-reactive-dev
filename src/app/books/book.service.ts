@@ -38,6 +38,14 @@ export class BookService {
     )
   );
 
+  selectedBook$ = this.booksWithCategory$
+    .pipe(
+      map(books => 
+        books.find(book => book.id === 5)
+      ),
+      tap(book => console.log('selectedBook', book))
+    );
+
   constructor(private http: HttpClient, private bookCategoryService: BookCategoryService, private publisherService: PublisherService) { }
 
   private fakeBook(){
