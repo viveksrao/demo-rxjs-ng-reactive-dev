@@ -13,7 +13,8 @@ import { BookCategoryService } from 'src/app/book-categories/book-category.servi
 export class BookListComponent {
 
   pageTitle = 'Book List';
-  errorMessage = '';
+  private errorMessageSubject = new Subject<string>();
+  errorMessage$ = this.errorMessageSubject.asObservable();
 
   private categorySelectedSubject = new BehaviorSubject<number>(0);
   categorySelectedAction$ = this.categorySelectedSubject.asObservable();
@@ -28,7 +29,7 @@ export class BookListComponent {
         selectedCategoryId ? book.categoryId === selectedCategoryId : true
     )),
     catchError(err => {
-      this.errorMessage = err;
+      this.errorMessageSubject.next(err);
       return EMPTY;
     })
   );
@@ -36,7 +37,7 @@ export class BookListComponent {
   categories$ = this.bookCategoryService.bookCategories$
   .pipe(
     catchError(err => {
-      this.errorMessage = err;
+      this.errorMessageSubject.next(err);
       return EMPTY;
     })
   );

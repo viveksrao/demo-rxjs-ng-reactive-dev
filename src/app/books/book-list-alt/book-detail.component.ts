@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BookService } from '../book.service';
-import { EMPTY } from 'rxjs';
+import { EMPTY, Subject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Component({
@@ -12,12 +12,13 @@ import { catchError } from 'rxjs/operators';
 export class BookDetailComponent implements OnInit {
 
   pageTitle = 'Book Detail';
-  errorMessage = '';
+  private errorMessageSubject = new Subject<string>();
+  errorMessage$ = this.errorMessageSubject.asObservable();
 
   book$ = this.bookService.selectedBook$
   .pipe(
     catchError(err => {
-      this.errorMessage = err;
+      this.errorMessageSubject.next(err);
       return EMPTY;
     })
   );
