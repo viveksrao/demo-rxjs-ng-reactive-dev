@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { throwError, Observable, combineLatest, BehaviorSubject, Subject, merge } from 'rxjs';
-import { catchError, tap, map, scan } from "rxjs/operators";
+import { catchError, tap, map, scan, shareReplay } from "rxjs/operators";
 
 import { Book } from './book';
 import { Publisher } from "../publishers/publisher";
@@ -35,7 +35,8 @@ export class BookService {
           c => book.categoryId === c.id
         ).name
       }) as Book)
-    )
+    ),
+    shareReplay(1)
   );
 
   private bookSelectedSubject = new BehaviorSubject<number>(0);
@@ -49,7 +50,8 @@ export class BookService {
       map(([books, selectedBookId]) => 
         books.find(book => book.id === selectedBookId)
       ),
-      tap(book => console.log('selectedBook', book))
+      tap(book => console.log('selectedBook', book)),
+      shareReplay(1)
     );
 
   private bookInsertedSubject = new Subject<Book>();

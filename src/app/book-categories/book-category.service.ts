@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { throwError } from 'rxjs';
 
 import { BookCategory } from "./book-category";
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, shareReplay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,7 @@ export class BookCategoryService {
   bookCategories$ = this.http.get<BookCategory[]>(this.bookCategoriesUrl)
   .pipe(
     tap(data => console.log(`Categories`, JSON.stringify(data))),
+    shareReplay(1),
     catchError(this.handleError)
   );
 
