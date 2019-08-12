@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { throwError, Observable, combineLatest, BehaviorSubject } from 'rxjs';
-import { catchError, tap, map } from "rxjs/operators";
+import { throwError, Observable, combineLatest, BehaviorSubject, Subject, merge } from 'rxjs';
+import { catchError, tap, map, scan } from "rxjs/operators";
 
 import { Book } from './book';
 import { Publisher } from "../publishers/publisher";
@@ -52,10 +52,25 @@ export class BookService {
       tap(book => console.log('selectedBook', book))
     );
 
+  private bookInsertedSubject = new Subject<Book>();
+  bookInsertedAction$ = this.bookInsertedSubject.asObservable();
+
+  booksWithAdd$ = merge(
+    this.booksWithCategory$,
+    this.bookInsertedAction$
+  ).pipe(
+    scan((acc: Book[], value: Book) => [...acc, value])
+  )
+
   constructor(private http: HttpClient, private bookCategoryService: BookCategoryService, private publisherService: PublisherService) { }
 
   selectedBookChanged(selectedBookId: number): void{
     this.bookSelectedSubject.next(selectedBookId);
+  }
+
+  addBook(newBook?: Book){
+    newBook = newBook || this.fakeBook();
+    this.bookInsertedSubject.next(newBook);
   }
 
   private fakeBook(){

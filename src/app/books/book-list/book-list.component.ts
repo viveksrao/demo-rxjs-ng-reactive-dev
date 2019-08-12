@@ -20,7 +20,7 @@ export class BookListComponent {
   categorySelectedAction$ = this.categorySelectedSubject.asObservable();
 
   books$ = combineLatest([
-    this.bookService.booksWithCategory$,
+    this.bookService.booksWithAdd$,
     this.categorySelectedAction$
   ]) 
   .pipe(
@@ -45,7 +45,7 @@ export class BookListComponent {
   constructor(private bookService: BookService, private bookCategoryService: BookCategoryService) { }
 
   onAdd(): void{
-    console.log('Not yet implemented');
+    this.bookService.addBook();
   }
 
   onSelected(categoryId: string): void{
