@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { throwError } from 'rxjs';
+import { throwError, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Publisher } from './publisher';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +10,16 @@ import { throwError } from 'rxjs';
 export class PublisherService {
   publishersUrl = 'api/publishers';
 
-  constructor(private http: HttpClient) { }
+  publishersWithMap$ = of(1,5,8)
+  .pipe(
+    map(id => this.http.get<Publisher>(`${this.publishersUrl}/${id}`))
+  )
+
+  constructor(private http: HttpClient) { 
+    this.publishersWithMap$.subscribe(o => o.subscribe(
+      item => console.log('map result', item)
+    ));
+  }
 
   private handleError(err: any){
     let errorMessage: string;
