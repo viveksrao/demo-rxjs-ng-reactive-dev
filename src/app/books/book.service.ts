@@ -18,7 +18,7 @@ export class BookService {
   private publishersUrl = this.publisherService.publishersUrl;
 
   books$ = this.http.get<Book[]>(this.booksUrl).pipe(
-    tap(data => console.log('Books: ', JSON.stringify(data))),
+    // tap(data => console.log('Books: ', JSON.stringify(data))),
     catchError(this.handleError)
   );
 

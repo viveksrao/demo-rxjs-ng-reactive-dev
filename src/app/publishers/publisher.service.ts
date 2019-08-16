@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { throwError, of } from 'rxjs';
-import { map, tap, concatMap } from 'rxjs/operators';
+import { map, tap, concatMap, mergeMap } from 'rxjs/operators';
 import { Publisher } from './publisher';
 
 @Injectable({
@@ -21,13 +21,18 @@ export class PublisherService {
     concatMap(id => this.http.get<Publisher>(`${this.publishersUrl}/${id}`))
   );
 
+  publishersWithMergeMap$ = of(1,5,8)
+  .pipe(
+    tap(id => console.log('mergeMap Source Observable', id)),
+    mergeMap(id => this.http.get<Publisher>(`${this.publishersUrl}/${id}`))
+  );
+
   constructor(private http: HttpClient) { 
     // this.publishersWithMap$.subscribe(o => o.subscribe(
     //   item => console.log('map result', item)
     // ));
-    this.publishersWithConcatMap$.subscribe(
-      item => console.log('concatMap result', item)
-    );
+    this.publishersWithConcatMap$.subscribe(item => console.log('concatMap result', item));
+    this.publishersWithMergeMap$.subscribe(item => console.log('mergeMap result', item));
   }
 
   private handleError(err: any){
