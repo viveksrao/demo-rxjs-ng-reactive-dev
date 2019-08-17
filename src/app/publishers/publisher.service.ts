@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { throwError, of } from 'rxjs';
-import { map, tap, concatMap, mergeMap } from 'rxjs/operators';
+import { map, tap, concatMap, mergeMap, switchMap } from 'rxjs/operators';
 import { Publisher } from './publisher';
 
 @Injectable({
@@ -27,12 +27,19 @@ export class PublisherService {
     mergeMap(id => this.http.get<Publisher>(`${this.publishersUrl}/${id}`))
   );
 
+  publishersWithSwitchMap$ = of(1,5,8)
+  .pipe(
+    tap(id => console.log('switchMap Source Observable', id)),
+    switchMap(id => this.http.get<Publisher>(`${this.publishersUrl}/${id}`))
+  );
+
   constructor(private http: HttpClient) { 
     // this.publishersWithMap$.subscribe(o => o.subscribe(
     //   item => console.log('map result', item)
     // ));
-    this.publishersWithConcatMap$.subscribe(item => console.log('concatMap result', item));
-    this.publishersWithMergeMap$.subscribe(item => console.log('mergeMap result', item));
+    // this.publishersWithConcatMap$.subscribe(item => console.log('concatMap result', item));
+    // this.publishersWithMergeMap$.subscribe(item => console.log('mergeMap result', item));
+    // this.publishersWithSwitchMap$.subscribe(item => console.log('switchMap result', item));
   }
 
   private handleError(err: any){
