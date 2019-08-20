@@ -23,6 +23,15 @@ export class BookDetailComponent implements OnInit {
     })
   );
 
+  bookPublishers$ = this.bookService.selectedBookPublishers$
+  .pipe(
+    catchError(err => {
+      this.errorMessageSubject.next(err);
+      return EMPTY;
+    })
+  );
+
+
   constructor(private bookService: BookService) { }
 
   ngOnInit() {

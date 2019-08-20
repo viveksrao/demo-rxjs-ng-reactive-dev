@@ -64,6 +64,15 @@ export class BookService {
     scan((acc: Book[], value: Book) => [...acc, value])
   )
 
+  selectedBookPublishers$ = combineLatest([
+    this.selectedBook$,
+    this.publisherService.publishers$
+  ]).pipe(
+    map(([selectedBook, publishers]) => 
+      publishers.filter(publisher => selectedBook.publisherIds.includes(publisher.id))
+    )
+  );
+
   constructor(private http: HttpClient, private bookCategoryService: BookCategoryService, private publisherService: PublisherService) { }
 
   selectedBookChanged(selectedBookId: number): void{

@@ -28,7 +28,7 @@
       <div class="col-md-6">{{book.quantityInStock}}</div>
     </div>
     <div class="table-responsive">
-      <table class="table mb-0" *ngIf="bookPublishers">
+      <table class="table mb-0" *ngIf="bookPublishers$ | async as bookPublishers">
         <thead>
           <tr>
             <th>Publisher</th>

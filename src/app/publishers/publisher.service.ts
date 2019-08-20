@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { throwError, of } from 'rxjs';
-import { map, tap, concatMap, mergeMap, switchMap } from 'rxjs/operators';
+import { map, tap, concatMap, mergeMap, switchMap, catchError, shareReplay } from 'rxjs/operators';
 import { Publisher } from './publisher';
 
 @Injectable({
@@ -9,6 +9,13 @@ import { Publisher } from './publisher';
 })
 export class PublisherService {
   publishersUrl = 'api/publishers';
+
+  publishers$ = this.http.get<Publisher[]>(this.publishersUrl)
+  .pipe(
+    tap(data => console.log('publishers', JSON.stringify(data))),
+    shareReplay(1),
+    catchError(this.handleError)
+  );
 
   publishersWithMap$ = of(1,5,8)
   .pipe(
