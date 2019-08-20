@@ -16,9 +16,12 @@ export class BookListComponent {
   private errorMessageSubject = new Subject<string>();
   errorMessage$ = this.errorMessageSubject.asObservable();
 
+  // Action Stream
   private categorySelectedSubject = new BehaviorSubject<number>(0);
   categorySelectedAction$ = this.categorySelectedSubject.asObservable();
 
+  // Merge Data Stream with Action Stream
+  // To Filter to the selected Category
   books$ = combineLatest([
     this.bookService.booksWithAdd$,
     this.categorySelectedAction$
@@ -34,12 +37,23 @@ export class BookListComponent {
     })
   );
 
+  // Categories for dropdown list
   categories$ = this.bookCategoryService.bookCategories$
   .pipe(
     catchError(err => {
       this.errorMessageSubject.next(err);
       return EMPTY;
     })
+  );
+
+  vm$ = combineLatest([
+    this.books$,
+    this.categories$
+  ])
+  .pipe(
+    map(([books, categories]) => 
+      ({ books, categories })
+    )
   );
 
   constructor(private bookService: BookService, private bookCategoryService: BookCategoryService) { }

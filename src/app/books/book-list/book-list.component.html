@@ -2,13 +2,13 @@
   <div class="card-header">
     {{pageTitle}}
   </div>
-  <div class="card-body">
+  <div class="card-body" *ngIf="vm$ | async as vm">
     <div class="container">
       <div class="row justify-content-between">
         <div class="col-3">
           <select class="form-control" (change)="onSelected($event.target.value)">
             <option value="0">- Display All -</option>
-            <option *ngFor="let category of categories$ | async" [value]="category.id">
+            <option *ngFor="let category of vm.categories" [value]="category.id">
               {{category.name}}
             </option>
           </select>
@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="table-responsive">
-      <table class="table mb-0" *ngIf="books$ | async as books">
+      <table class="table mb-0" *ngIf="vm.books">
         <thead>
           <tr>
             <th>Book</th>
@@ -29,7 +29,7 @@
             <th>In Stock</th>
           </tr>
         </thead>
-        <tbody *ngFor="let book of books">
+        <tbody *ngFor="let book of vm.books">
           <tr>
             <td>{{ book.bookName }}</td>
             <td>{{ book.bookCode }}</td>
