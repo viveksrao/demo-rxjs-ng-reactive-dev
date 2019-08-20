@@ -1,7 +1,8 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BookService } from '../book.service';
 import { EMPTY, Subject } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
+import { Book } from '../book';
 
 @Component({
   selector: 'app-book-detail',
@@ -11,7 +12,6 @@ import { catchError } from 'rxjs/operators';
 })
 export class BookDetailComponent implements OnInit {
 
-  pageTitle = 'Book Detail';
   private errorMessageSubject = new Subject<string>();
   errorMessage$ = this.errorMessageSubject.asObservable();
 
@@ -22,6 +22,12 @@ export class BookDetailComponent implements OnInit {
       return EMPTY;
     })
   );
+
+  pageTitle$ = this.book$
+    .pipe(
+      map((b: Book) => 
+      b ? `Book Detail for: ${b.bookName}` : null)
+    );
 
   bookPublishers$ = this.bookService.selectedBookPublishers$
   .pipe(
