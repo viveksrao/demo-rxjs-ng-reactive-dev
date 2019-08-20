@@ -1,7 +1,8 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { EMPTY, Subject } from 'rxjs';
+import { EMPTY, Subject, combineLatest } from 'rxjs';
 import { BookService } from '../book.service';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
+import { Book } from '../book';
 
 @Component({
   selector: 'app-book-list-alt',
@@ -15,6 +16,7 @@ export class BookListAltComponent {
   private errorMessageSubject = new Subject<string>();
   errorMessage$ = this.errorMessageSubject.asObservable();
 
+  // Books with their categories
   books$ = this.bookService.booksWithCategory$
   .pipe(
     catchError(err => {
@@ -23,7 +25,18 @@ export class BookListAltComponent {
     })
   );
 
+  // Selected Book to highlight the entry
   selectedBook$ = this.bookService.selectedBook$;
+
+  // Combine all streams for the view
+  vm$ = combineLatest([
+    this.books$,
+    this.selectedBook$
+  ])
+  .pipe(
+    map(([books, book]: [Book[], Book]) => 
+    ({ books, bookId: book ? book.id : 0 }))
+  );
 
   constructor(private bookService: BookService) { }
   
