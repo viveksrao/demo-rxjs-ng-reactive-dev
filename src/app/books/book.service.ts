@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { throwError, Observable, combineLatest, BehaviorSubject, Subject, merge } from 'rxjs';
-import { catchError, tap, map, scan, shareReplay } from "rxjs/operators";
+import { throwError, Observable, combineLatest, BehaviorSubject, Subject, merge, from } from 'rxjs';
+import { catchError, tap, map, scan, shareReplay, mergeMap, toArray, filter, switchMap } from "rxjs/operators";
 
 import { Book } from './book';
 import { Publisher } from "../publishers/publisher";
@@ -64,14 +64,25 @@ export class BookService {
     scan((acc: Book[], value: Book) => [...acc, value])
   )
 
-  selectedBookPublishers$ = combineLatest([
-    this.selectedBook$,
-    this.publisherService.publishers$
-  ]).pipe(
-    map(([selectedBook, publishers]) => 
-      publishers.filter(publisher => selectedBook.publisherIds.includes(publisher.id))
-    )
-  );
+  // selectedBookPublishers$ = combineLatest([
+  //   this.selectedBook$,
+  //   this.publisherService.publishers$
+  // ]).pipe(
+  //   map(([selectedBook, publishers]) => 
+  //     publishers.filter(publisher => selectedBook.publisherIds.includes(publisher.id))
+  //   )
+  // );
+
+  selectedBookPublishers$ = this.selectedBook$
+    .pipe(
+      filter(selectedBook => Boolean(selectedBook)),
+      switchMap(selectedBook => 
+        from(selectedBook.publisherIds)
+        .pipe(
+          mergeMap(publisherId => this.http.get<Publisher>(`${this.publishersUrl}/${publisherId}`)),
+          toArray(),
+          tap(publishers => console.log('book publishers', JSON.stringify(publishers)))
+        )));
 
   constructor(private http: HttpClient, private bookCategoryService: BookCategoryService, private publisherService: PublisherService) { }
 
