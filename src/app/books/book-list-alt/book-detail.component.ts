@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BookService } from '../book.service';
-import { EMPTY, Subject } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { EMPTY, Subject, combineLatest } from 'rxjs';
+import { catchError, map, filter } from 'rxjs/operators';
 import { Book } from '../book';
 
 @Component({
@@ -35,6 +35,17 @@ export class BookDetailComponent implements OnInit {
       this.errorMessageSubject.next(err);
       return EMPTY;
     })
+  );
+
+  vm$ = combineLatest([
+    this.book$,
+    this.bookPublishers$,
+    this.pageTitle$
+  ])
+  .pipe(
+    filter(([book]) => Boolean(book)),
+    map(([book, bookPublishers, pageTitle]) => 
+    ({ book, bookPublishers, pageTitle }))
   );
 
 

@@ -1,34 +1,34 @@
-<div class="card" *ngIf="book$ | async as book">
-  <div class="card-header" *ngIf="pageTitle$ | async as pageTitle">
-    {{pageTitle}}
+<div class="card" *ngIf="vm$ | async as vm">
+  <div class="card-header">
+    {{vm.pageTitle}}
   </div>
   <div class="card-body">
     <div class="row">
       <div class="col-md-2">Name:</div>
-      <div class="col-md-6">{{book.bookName}}</div>
+      <div class="col-md-6">{{vm.book.bookName}}</div>
     </div>
     <div class="row">
       <div class="col-md-2">Code:</div>
-      <div class="col-md-6">{{book.bookCode}}</div>
+      <div class="col-md-6">{{vm.book.bookCode}}</div>
     </div>
     <div class="row">
       <div class="col-md-2">Category:</div>
-      <div class="col-md-6">{{book.category}}</div>
+      <div class="col-md-6">{{vm.book.category}}</div>
     </div>
     <div class="row">
       <div class="col-md-2">Description:</div>
-      <div class="col-md-6">{{book.description}}</div>
+      <div class="col-md-6">{{vm.book.description}}</div>
     </div>
     <div class="row">
       <div class="col-md-2">Price:</div>
-      <div class="col-md-6">{{book.price|currency:"USD":"symbol"}}</div>
+      <div class="col-md-6">{{vm.book.price|currency:"USD":"symbol"}}</div>
     </div>
     <div class="row">
       <div class="col-md-2">In Stock:</div>
-      <div class="col-md-6">{{book.quantityInStock}}</div>
+      <div class="col-md-6">{{vm.book.quantityInStock}}</div>
     </div>
     <div class="table-responsive">
-      <table class="table mb-0" *ngIf="bookPublishers$ | async as bookPublishers">
+      <table class="table mb-0">
         <thead>
           <tr>
             <th>Publisher</th>
@@ -37,7 +37,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let publisher of bookPublishers">
+          <tr *ngFor="let publisher of vm.bookPublishers">
             <td>{{ publisher.name }}</td>
             <td>{{ publisher.cost | currency:"USD":"symbol":"1.2-2" }}</td>
             <td>{{ publisher.minQuantity }}</td>
